@@ -4,7 +4,7 @@
 </div>
 <br class="clear">
 <div class="tweet-wrapper no-border no-options">
-  <form>
+  <form id="post-tweet">
     <div class="form-group">
       <label for="twt">Post a tweet</label>
       <textarea class="form-control" rows="2" id="twt" name="tweet"></textarea>
@@ -12,14 +12,17 @@
     <input class="btn btn-primary" type="submit" value="Post">     <span class="text-muted">150 characters left</span>
   </form>
 </div>
+
+[% WHILE (tweet = tweets.next) %]
 <div class="tweet-wrapper" onmouseover="unhide(this)" onmouseout="hide(this)">
   <div class="tweet">
     <div class="text">
-      Hey <a href="@">@everyone</a>! This is my first non-tweet on this <a href="#">#twitter</a> clone!
+      [% tweet.text %]
     </div>
     <div class="meta">
-      <span class="author text-muted">by <a href="#">@ericflin</a> (Eric Lin)</span>
-      <span class="time text-muted">Thursday, January 22, 2015</span>
+      <span class="author text-muted">by <a href="[% tweet.user.username %]">@[% tweet.user.username %]</a> ([% tweet.user.name %])</span>
+      <span class="time text-muted">[% tweet.getDate() %]</span>
+      <br class="clear">
     </div>
   </div>
   <div class="options">
@@ -27,21 +30,7 @@
   </div>
   <br class="clear">
 </div>
-
-<div class="tweet-wrapper">
-  <div class="tweet">
-    <div class="text">
-      Hey <a href="@">@everyone</a>! This is my first non-tweet on this <a href="#">#twitter</a> clone!
-    </div>
-    <div class="meta">
-      <span class="author text-muted">by <a href="#">@ericflin</a> (Eric Lin)</span>
-      <span class="time text-muted">Thursday, January 22, 2015</span>
-    </div>
-  </div>
-  <div class="options">
-  </div>
-  <br class="clear">
-</div>
+[% END %]
 
 <script type="text/javascript">
 function unhide(self) {

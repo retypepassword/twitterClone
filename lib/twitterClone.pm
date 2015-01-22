@@ -20,6 +20,10 @@ use Catalyst qw/
     -Debug
     ConfigLoader
     Static::Simple
+    Authentication
+    Session
+    Session::Store::DBI
+    Session::State::Cookie
 /;
 
 extends 'Catalyst';
@@ -40,6 +44,14 @@ __PACKAGE__->config(
     # Disable deprecated behavior needed by old applications
     disable_component_resolution_regex_fallback => 1,
     enable_catalyst_header => 1, # Send X-Catalyst header
+    'Plugin::Session' => {
+      expires => 3600,
+      dbi_dbh => 'DB',
+      dbi_table => 'sessions',
+      dbi_id_field => 'id',
+      dbi_data_field => 'session_data',
+      dbi_expires_field => 'expires',
+    },
 );
 
 # Start the application

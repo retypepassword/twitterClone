@@ -13,7 +13,7 @@
     <link rel="stylesheet" href="[% c.uri_for('/bootstrap-3.3.2/css/bootstrap.min.css') %]" type="text/css">
   </head>
   <body>
-    <div class="content">
+    <div class="page-wrapper">
       <div class="top">
         <h1>A Twitter Clone</h1>
         <div class="options">
@@ -23,16 +23,23 @@
 [% IF c.logged_in %]
           <a href="#">Sign Out</a>
 [% ELSE %]
-          <a href="#">Sign Up/Sign In</a>
+          <a href="#">Sign Up / Sign In</a>
 [% END %]
           <span class="search"><input type="text" id="search_box" placeholder="Search" class="form-control" /></span>
         </div>
+        <br class="clear">
       </div>
-      <br class="clear">
+    <div class="person">
+    <h2>Person's Name</h2>
+    <a class="btn btn-default" href="#"><i class="glyphicon glyphicon-plus"></i> Follow</a>
+    </div>
+    <div class="content">
     [% content %]
+    </div>
     </div>
     <script src="[% c.uri_for('/static/scripts/jquery-2.1.3.min.js') %]"></script>
     <script src="[% c.uri_for('/bootstrap-3.3.2/js/bootstrap.min.js') %]"></script>
     <script src="[% c.uri_for('/static/scripts/accounts_n_search.js') %]"></script>
+    <script src="[% c.uri_for('/static/scripts/tweets.js') %]"></script>
   </body>
 </html>

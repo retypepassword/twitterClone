@@ -49,6 +49,7 @@ __PACKAGE__->table("tweet");
 
   data_type: 'integer'
   extra: {unsigned => 1}
+  is_foreign_key: 1
   is_nullable: 0
 
 =head2 text
@@ -56,6 +57,12 @@ __PACKAGE__->table("tweet");
   data_type: 'varchar'
   is_nullable: 1
   size: 141
+
+=head2 date
+
+  data_type: 'datetime'
+  datetime_undef_if_invalid: 1
+  is_nullable: 1
 
 =cut
 
@@ -68,9 +75,20 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "user_id",
-  { data_type => "integer", extra => { unsigned => 1 }, is_nullable => 0 },
+  {
+    data_type => "integer",
+    extra => { unsigned => 1 },
+    is_foreign_key => 1,
+    is_nullable => 0,
+  },
   "text",
   { data_type => "varchar", is_nullable => 1, size => 141 },
+  "date",
+  {
+    data_type => "datetime",
+    datetime_undef_if_invalid => 1,
+    is_nullable => 1,
+  },
 );
 
 =head1 PRIMARY KEY
@@ -117,6 +135,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 user
+
+Type: belongs_to
+
+Related object: L<twitterClone::Schema::Result::User>
+
+=cut
+
+__PACKAGE__->belongs_to(
+  "user",
+  "twitterClone::Schema::Result::User",
+  { id => "user_id" },
+  { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
+);
+
 =head2 hashtags
 
 Type: many_to_many
@@ -138,9 +171,23 @@ Composing rels: L</tweets_to> -> user
 __PACKAGE__->many_to_many("users", "tweets_to", "user");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 07:52:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:2swb34l5PGHMeBWyJevG9Q
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 13:00:30
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L4AeoE5fdq2euux1alF6IA
 
+sub updateTagsAndPeople {
+  my $self = shift;
+  # Code for updating tags and people
+}
+
+sub html {
+  my $self = shift;
+  return $self->text;
+}
+
+sub getDate {
+  my $self = shift;
+  return $self->date->strftime("%A, %B %d, %Y");
+}
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
 __PACKAGE__->meta->make_immutable;

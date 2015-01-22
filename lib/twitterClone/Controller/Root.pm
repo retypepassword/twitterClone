@@ -1,5 +1,6 @@
 package twitterClone::Controller::Root;
 use Moose;
+use DateTime;
 use namespace::autoclean;
 
 BEGIN { extends 'Catalyst::Controller' }
@@ -31,8 +32,23 @@ The root page (/)
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
+    my $tweets = $c->model('DB')->resultset('Tweet')->search(
+      { 'user.private' => '0' },
+      { join => 'user',
+        order_by => { '-desc' => ['me.date']} },
+    );
+
+    # select * from tweet me left join followed followed on me.user_id = followed.followed_id left join tweet_to tweet_to on tweet_to.tweet_id = me.id where followed.follower_id = 2 OR me.user_id = 2 OR tweet_to.user_id = 2; The 2 is the current user's id.
+    my $followed_tweets = $c->model('DB')->resultset('Tweet')->search(
+      [ { 'followed_followeds.follower_id' => 2 }, { 'me.user_id' => 2 }, { 'tweets_to.user_id' => 2 } ],
+      { join => [ { 'user' => 'followed_followeds' }, 'tweets_to' ],
+        order_by => { '-desc' => ['me.date']} },
+    );
+
     # Hello World
-    $c->stash(template => 'index.tt2');
+    $c->stash(
+      tweets => $followed_tweets,
+      template => 'index.tt2');
 }
 
 =head2 default

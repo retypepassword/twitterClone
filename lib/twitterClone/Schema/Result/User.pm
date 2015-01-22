@@ -45,6 +45,12 @@ __PACKAGE__->table("user");
   is_auto_increment: 1
   is_nullable: 0
 
+=head2 username
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 30
+
 =head2 name
 
   data_type: 'varchar'
@@ -66,6 +72,8 @@ __PACKAGE__->add_columns(
     is_auto_increment => 1,
     is_nullable => 0,
   },
+  "username",
+  { data_type => "varchar", is_nullable => 1, size => 30 },
   "name",
   { data_type => "varchar", is_nullable => 1, size => 50 },
   "private",
@@ -116,6 +124,21 @@ __PACKAGE__->has_many(
   { cascade_copy => 0, cascade_delete => 0 },
 );
 
+=head2 tweets_2s
+
+Type: has_many
+
+Related object: L<twitterClone::Schema::Result::Tweet>
+
+=cut
+
+__PACKAGE__->has_many(
+  "tweets_2s",
+  "twitterClone::Schema::Result::Tweet",
+  { "foreign.user_id" => "self.id" },
+  { cascade_copy => 0, cascade_delete => 0 },
+);
+
 =head2 tweets_to
 
 Type: has_many
@@ -162,8 +185,8 @@ Composing rels: L</tweets_to> -> tweet
 __PACKAGE__->many_to_many("tweets", "tweets_to", "tweet");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 07:52:50
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:oGxIwlQH6ShzXEh7dRd3SQ
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 13:19:55
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CFeto1BNY/EiXzOVwVIizA
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

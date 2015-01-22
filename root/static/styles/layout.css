@@ -1,7 +1,36 @@
 /* Purposely not using Bootstrap's scaffolding for demo purposes */
-.content {
-  width: 60em;
+.page-wrapper {
+  padding: 0.5em;
+  /*max-*/width: 80em;
   margin: 0 auto;
+}
+
+.content {
+  /*max-*/width: 60em;
+  margin: 0 auto;
+}
+
+.page-wrapper .person {
+  width: 15em;
+  margin-right: 4em;
+  float: left;
+}
+
+.page-wrapper .content {
+  float: left;
+  margin: 0;
+}
+
+.top {
+  margin-bottom: 0.5em;
+}
+
+.top, .latest, .person {
+  padding: 0.5em 0 0 0;
+}
+
+.top h1, .latest h2, .person h2 {
+  margin-top: 0;
 }
 
 .top h1, .top a, .search, .latest h2 {
@@ -13,25 +42,21 @@
 }
 
 .top a {
-  margin: 2.2em 2em;
-}
-
-.search {
-  margin: 1.8em 2em;
+  margin: 0.5em 2em 0.5em 0;
 }
 
 .latest .options {
-  margin: 2.2em 2em;
+  margin: 0.5em 2em;
 }
 
 .tweet-wrapper {
-  width: 44em;
+  /*max-*/width: 44em;
   margin: 0 auto 1em auto;
 }
 
 .tweet {
   float: left;
-  width: 40em;
+  /*max-*/width: 40em;
   border: 1px #aaa solid;
   margin-left: 2em;
   -webkit-border-radius: 5px;
@@ -71,7 +96,7 @@
 }
 
 .tweet-wrapper.no-options {
-  width: 40em;
+  /*max-*/width: 40em;
 }
 
 .hidden {
