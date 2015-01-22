@@ -1,0 +1,79 @@
+/* Purposely not using Bootstrap's scaffolding for demo purposes */
+.content {
+  width: 60em;
+  margin: 0 auto;
+}
+
+.top h1, .top a, .search, .latest {
+  float: left;
+}
+
+.options {
+  float: right;
+}
+
+.top a {
+  margin: 2.2em 2em;
+}
+
+.search {
+  margin: 1.8em 2em;
+}
+
+.latest .options {
+  margin: 2.2em 2em;
+}
+
+.tweet-wrapper {
+  width: 44em;
+  margin: 0 auto 1em auto;
+}
+
+.tweet {
+  float: left;
+  width: 40em;
+  border: 1px #aaa solid;
+  margin-left: 2em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.tweet-wrapper .options {
+  float: left;
+  margin-left: 5px;
+  max-width: 0.9em;
+}
+
+.tweet .text {
+  padding: 1em;
+}
+
+.tweet .meta {
+  padding: 0.5em 1em;
+  background-color: #eee;
+}
+
+.tweet .meta .time {
+  float: right;
+}
+
+.tweet form {
+  margin: 0.5em 0.5em;
+}
+
+.clear {
+  clear: both;
+}
+
+.no-border {
+  border: none;
+}
+
+.tweet-wrapper.no-options {
+  width: 40em;
+}
+
+.hidden {
+  visibility: none;
+}
