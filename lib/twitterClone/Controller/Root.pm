@@ -116,7 +116,7 @@ sub userpages :PathPart('') :Chained('/') Args(1) {
                                                                      follower_id => $c->session->{user_id} });
     my $constraints = [ { 'followed_followeds.follower_id' => $uid }, { 'me.user_id' => $uid }, { 'tweets_to.user_id' => $uid } ];
 
-    if ( ! defined $is_followed || $c->session->{user_id} == $uid ) {
+    if ( ! defined $is_followed && $c->session->{user_id} != $uid ) {
       # select * from tweet me join user user on user.id = me.user_id left join followed followed on me.user_id = followed.followed_id left join tweet_to tweet_to on tweet_to.tweet_id = me.id where (followed.follower_id = 2 OR me.user_id = 2 OR tweet_to.user_id = 2) AND user.private = '0'; The 2 is the current user's id.
      $constraints = [ -and => [ $constraints, { 'user.private' => '0' } ] ];
     }

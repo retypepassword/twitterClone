@@ -2,6 +2,8 @@
 <div class="content search-results">
 [% IF search_results != 1 %]
 <h2>Search Results for: [% search_results %]</h2>
+[% ELSE %]
+<h2>Public Tweets</h2>
 [% END %]
 [% ELSE %]
 <div class="content">
@@ -35,19 +37,11 @@
     </div>
   </div>
   <div class="options">
-    <a href="#" class="text-danger hidden"><i class="glyphicon glyphicon-remove"></i></a>
+[% IF tweet.user_id == c.session.user_id %]
+    <a href="#" class="text-danger hidden" data-id="[% tweet.id %]"><i class="glyphicon glyphicon-remove"></i></a>
+[% END %]
   </div>
   <br class="clear">
 </div>
 [% END %]
-
-<script type="text/javascript">
-function unhide(self) {
-  self.childNodes[3].childNodes[1].className = "text-danger";
-}
-
-function hide(self) {
-  self.childNodes[3].childNodes[1].className = "text-danger hidden";
-}
-</script>
 </div>

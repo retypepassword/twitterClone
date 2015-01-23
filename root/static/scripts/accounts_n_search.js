@@ -13,7 +13,7 @@ $("#follow").click(function(e){
   }
   
   var self = this;
-  $.post( "api/follow", { uid : id, action : act }, function(data) {
+  $.post( "/api/follow", { uid : id, action : act }, function(data) {
     if (data.success == 1)
       self.innerHTML = "<i class=\"glyphicon glyphicon-" + icon + "\"></i> " + text;
   }, "json");
@@ -59,9 +59,9 @@ var signup_in_handler = function(action) {
     if (action.length == 0) {
       action = $("#acct-form")[0].action;
     }
-    $.post( action, $("#acct-form").serialize(), function(data) {
+    $.post( action, $("#acct-form").serialize() ).done( function(data) {
       if (data.status == "User created" || data.status == "Logged in") {
-        location.reload(true);
+        window.location = "/" + data.user;
       }
       else {
         $("#err .message").html(data.status);
@@ -79,4 +79,15 @@ $("#acct-form").submit(signup_in_handler(""));
 
 $("#err button").click(function(e) {
   $("#err")[0].className += " hidden";
+});
+
+$("#priv").click(function(e) {
+  var private = this.checked ? "private" : "unprivate";
+  var mbody = this.parentNode;
+  $.post( "/account/private", { action : private }, function(data) {
+    if (data.success == 1)
+      $(mbody).before("<div class=\"alert alert-success alert-dismissible\" role=\"alert\">" +
+                      "<button type=\"button\" class=\"close\" data-dismiss=\"alert\" aria-label=\"Close\"><span aria-hidden=\"true\">&times;</span></button>" +
+                      data.result + "</div>");
+  }, "json");
 });

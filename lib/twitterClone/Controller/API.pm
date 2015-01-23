@@ -9,7 +9,7 @@ sub tweet : Local ActionClass('REST') { }
 sub tweet_POST {
   my ($self, $c) = @_;
 
-  $c->forward('account/authenticate');
+  $c->forward('/account/authenticate');
 
   if ($c->session->{user_id}) {
     # Retrieve tweet from params
@@ -26,6 +26,7 @@ sub tweet_POST {
       $c,
       location => $c->req->uri->as_string,
       entity => {
+        id => $wholetweet->id,
         text => $wholetweet->html(),
         username => $wholetweet->user->user,
         author => $wholetweet->user->name,
@@ -38,12 +39,40 @@ sub tweet_POST {
   }
 }
 
+sub delete_tweet : Local ActionClass('REST') { }
+
+sub delete_tweet_POST {
+  my ($self, $c) = @_;
+
+  $c->forward('/account/authenticate');
+
+  if ($c->session->{user_id}) {
+    my $id = $c->request->params->{tweet} || '';
+
+    my $tweet = $c->model('DB')->resultset('Tweet')->find({ id => $id });
+    if ($tweet && $tweet->user_id == $c->session->{user_id}) {
+      $tweet->delete;
+
+      $self->status_accepted(
+        $c,
+        entity => { success => 1 }
+      );
+    }
+    else {
+      $self->status_bad_request($c, message => "You did not create this tweet, so you can't delete it");
+    }
+  }
+  else {
+    $self->status_bad_request($c, message => "Not logged in");
+  }
+}
+
 sub follow : Local ActionClass('REST') { }
 
 sub follow_POST {
   my ($self, $c) = @_;
 
-  $c->forward('account/authenticate');
+  $c->forward('/account/authenticate');
 
   if ($c->session->{user_id}) {
     my $uid = $c->request->params->{uid} || '';

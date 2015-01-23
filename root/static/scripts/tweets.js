@@ -9,10 +9,11 @@ $("#post-tweet").submit(function(e) {
                                     "<div class=\"meta\"><span class=\"author text-muted\">by <a href=\"/" + data.username + "\">@" +
                                     data.username + "</a> (" + data.author + ")</span>" +
                                     "<span class=\"time text-muted\">" + data.date + "</span><br class=\"clear\">" +
-                                    "</div></div><div class=\"options\"><a href=\"#\" class=\"remove text-danger hidden\">" +
+                                    "</div></div><div class=\"options\"><a href=\"#\" class=\"remove text-danger hidden\" data-id=\"" + data.id + "\">" +
                                     "<i class=\"glyphicon glyphicon-remove\"></i></a></div><br class=\"clear\"></div>");
     $("#twt")[0].value = "";
     $("#twt").keyup();
+    activate_delete_buttons();
   }, "json");
   e.preventDefault();
 });
@@ -28,3 +29,30 @@ $("#twt").keyup(function(e) {
   
   $("#post-tweet .text-muted").html(len + " characters left");
 });
+
+function activate_delete_buttons() {
+  $(".tweet-wrapper").mouseover(function(e) {
+    if ($(this).find('.options a')[0]) {
+      $(this).find('.options a')[0].className = "text-danger";
+    }
+  });
+
+  $(".tweet-wrapper").mouseout(function(e) {
+    if ($(this).find('.options a')[0]) {
+      $(this).find('.options a')[0].className = "text-danger hidden";
+    }
+  });
+  
+  $('.tweet-wrapper .options a').click(function(e) {
+    e.preventDefault();
+
+    var self = this;  
+    $.post( "/api/delete_tweet", { "tweet" : $(this).attr('data-id') }, function(data) {
+      if (data.success == 1) {
+        $(self).parentsUntil('.content').remove();
+      }
+    }, "json");
+  });
+}
+
+activate_delete_buttons();

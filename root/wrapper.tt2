@@ -24,16 +24,16 @@
           <div class="modal-body">
             <form id="acct-form" method="post" action="/account/create">
               <div class="form-group">
-                <label for="uname">Login Name</label>
-                <input type="text" class="form-control" name="uname" placeholder="Username">
+                <label for="i_uname">Login Name</label>
+                <input type="text" class="form-control" id="i_uname" name="uname" placeholder="Username">
               </div>
               <div class="signup hidden form-group">
-                <label for="name">Real Name</label>
-                <input type="text" class="form-control" name="name" placeholder="Real Name">
+                <label for="i_name">Real Name</label>
+                <input type="text" class="form-control" id="i_name" name="name" placeholder="Real Name">
               </div>
               <div class="form-group">
-                <label for="pass">Password</label>
-                <input type="password" class="form-control" name="pass" placeholder="Password">
+                <label for="i_pass">Password</label>
+                <input type="password" class="form-control" id="i_pass" name="pass" placeholder="Password">
               </div>
               <input type="submit" class="hidden" name="submit" value="Submit">
             </form>
@@ -51,13 +51,38 @@
       </div>
     </div>
 
+    <!-- Account settings box -->
+    <div class="modal fade" tabindex="-1" role="dialog" id="account-settings" aria-hidden="true">
+      <div class="modal-dialog modal-sm">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Account Settings</h4>
+          </div>
+          <div class="modal-body">
+            <div class="form-group">
+              <label for="priv">
+[% IF c.session.private %]                
+                <input type="checkbox" name="priv" id="priv" checked="checked">
+[% ELSE %]
+                <input type="checkbox" name="priv" id="priv">
+[% END %]
+                Private Account</label>
+                <p class="text-muted">(Hide my tweets from everyone but my followers.)</p>
+            </div>
+            <p><small><b>Don't want an account anymore?</b> You can <a id="del-acct" href="/account/delete">delete your account</a>.</small></p>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- Rest of the page content -->
     <div class="page-wrapper">
       <div class="top">
-        <h1><a href="/">A Twitter Clone</a></h1>
+        <h1><a href="/[% c.session.uname %]">A Twitter Clone</a></h1>
         <div class="options">
 [% IF c.session.user_id %]
-          <a href="#">Account Settings</a>
+          <a href="#" data-toggle="modal" data-target="#account-settings">Account Settings</a>
           <a href="/account/signout">Sign Out</a>
 [% ELSE %]
           <span class="login-links">

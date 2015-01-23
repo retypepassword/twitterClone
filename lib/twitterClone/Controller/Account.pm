@@ -37,15 +37,17 @@ sub create :Path('create') :Args(0) {
       my $u = $c->model('DB')->resultset('User')->create({
         user => $uname,
         passphrase => $pass,
-        name => $name
+        name => $name,
+        private => 0
       });
 
       $c->session->{user_id} = $u->id;
       $c->session->{uname} = $uname;
       $c->session->{passphrase} = $pass;
+      $c->session->{private} = 0;
 
       $c->response->content_type("application/json");
-      $c->response->body('{"status" : "User created"}');
+      $c->response->body('{"status" : "User created", "user" : "'. $uname. '"}');
     }
     else {
       $c->response->content_type("application/json");
@@ -67,13 +69,38 @@ sub login :Path('login') :Args(0) {
       $c->session->{user_id} = $check->id;
       $c->session->{uname} = $check->user;
       $c->session->{passphrase} = $pass;
+      $c->session->{private} = $check->private;
 
       $c->response->content_type("application/json");
-      $c->response->body('{"status" : "Logged in"}');
+      $c->response->body('{"status" : "Logged in", "user" : "'. $check->user.'"}');
     }
     else {
       $c->response->content_type("application/json");
-      $c->response->body('{"status" : "Wrong username and/or password' . $pass . '"}');
+      $c->response->body('{"status" : "Wrong username and/or password"}');
+    }
+}
+
+sub private :Path('private') :Args(0) {
+    my ( $self, $c ) = @_;
+
+    $c->forward('authenticate');
+
+    my $action = $c->request->params->{action};
+
+    my $check = $c->model('DB')->resultset('User')->find({
+      id => $c->session->{user_id}
+    });
+
+    if ( defined $check ) {
+      $check->update({
+        private => $action eq "private" ? 1 : 0
+      });
+
+      $c->response->content_type("application/json");
+      $c->response->body('{"success" : 1, "result" : "Successfully marked ' . $action . '"}');
+    }
+    else {
+      $c->response->body('{"success" : 0}');
     }
 }
 
@@ -89,6 +116,27 @@ sub authenticate :Path('auth') {
     delete $c->session->{user_id};
     delete $c->session->{uname};
     delete $c->session->{passphrase};
+  }
+  else {
+    $c->session->{private} = $check->private;
+  }
+}
+
+sub delete :Path('delete') {
+  my ($self, $c) = @_;
+
+  $c->forward('authenticate');
+
+  if ($c->request->params->{confirm}) {
+    my $user = $c->model('DB')->resultset('User')->search({
+      id => $c->session->{user_id}
+    });
+
+    $user->delete_all;
+    $c->detach('signout');
+  }
+  else {
+    $c->stash->{'template'} = 'account/confirm.tt2';
   }
 }
 
