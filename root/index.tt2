@@ -1,5 +1,8 @@
 [% IF search_results %]
 <div class="content search-results">
+[% IF search_results != 1 %]
+<h2>Search Results for: [% search_results %]</h2>
+[% END %]
 [% ELSE %]
 <div class="content">
 <div class="latest">
@@ -7,6 +10,7 @@
   <!-- <p class="options"><a href="#">Reload</a> | <a href="#">Auto-Refresh</a></p> -->
 </div>
 <br class="clear">
+[% IF c.session.user_id && c.session.uname == user.user %]
 <div class="tweet-wrapper no-border no-options">
   <form id="post-tweet" action="/tweet" method="post">
     <div class="form-group">
@@ -17,7 +21,7 @@
   </form>
 </div>
 [% END %]
-
+[% END %]
 [% WHILE (tweet = tweets.next) %]
 <div class="tweet-wrapper">
   <div class="tweet">
@@ -25,7 +29,7 @@
       [% tweet.html() %]
     </div>
     <div class="meta">
-      <span class="author text-muted">by <a href="[% tweet.user.user %]">@[% tweet.user.user %]</a> ([% tweet.user.name %])</span>
+      <span class="author text-muted">by <a href="[% c.uri_for('/', tweet.user.user) %]">@[% tweet.user.user %]</a> ([% tweet.user.name %])</span>
       <span class="time text-muted">[% tweet.getDate() %]</span>
       <br class="clear">
     </div>

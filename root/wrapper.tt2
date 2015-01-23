@@ -13,17 +13,56 @@
     <link rel="stylesheet" href="[% c.uri_for('/bootstrap-3.3.2/css/bootstrap.min.css') %]" type="text/css">
   </head>
   <body>
+    <!-- Login box. Hidden upon arrival. -->
+    <div class="modal fade" id="login" tabindex="-1" role="dialog" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title signup hidden">Sign Up</h4><h4 class="modal-title signin">Sign In</h4>
+          </div>
+          <div class="modal-body">
+            <form id="acct-form" method="post" action="/account/create">
+              <div class="form-group">
+                <label for="uname">Login Name</label>
+                <input type="text" class="form-control" name="uname" placeholder="Username">
+              </div>
+              <div class="signup hidden form-group">
+                <label for="name">Real Name</label>
+                <input type="text" class="form-control" name="name" placeholder="Real Name">
+              </div>
+              <div class="form-group">
+                <label for="pass">Password</label>
+                <input type="password" class="form-control" name="pass" placeholder="Password">
+              </div>
+              <input type="submit" class="hidden" name="submit" value="Submit">
+            </form>
+          </div>
+          <div class="modal-footer">
+            <div id="err" class="hidden alert alert-warning alert-dismissible" role="alert">
+              <button type="button" class="close"><span aria-hidden="true">&times;</span></button>
+              <span class="message"></span>
+            </div>
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+            <button id="signup" type="button" class="btn btn-primary signup hidden">Sign Up</button>
+            <button id="signin" type="button" class="btn btn-primary signin">Login</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Rest of the page content -->
     <div class="page-wrapper">
       <div class="top">
-        <h1>A Twitter Clone</h1>
+        <h1><a href="/">A Twitter Clone</a></h1>
         <div class="options">
-[% IF c.logged_in %]
+[% IF c.session.user_id %]
           <a href="#">Account Settings</a>
-[% END %]
-[% IF c.logged_in %]
-          <a href="#">Sign Out</a>
+          <a href="/account/signout">Sign Out</a>
 [% ELSE %]
-          <a href="#">Sign Up / Sign In</a>
+          <span class="login-links">
+            <a href="#" data-toggle="modal" data-target="#login" data-act="up">Sign Up</a> / <a href="#" data-toggle="modal" data-target="#login" data-act="in">Sign In</a>
+          </span>
 [% END %]
           <span class="search">
             <form method="post" action="/search/query">

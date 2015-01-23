@@ -203,7 +203,7 @@ sub html {
   my $self = shift;
   if ( $self->text =~ /[#@]/ ) {
     my $html = $self->text;
-    $html =~ s/#([[:alnum:]]*)/<a href="hashtag\/$1">#$1<\/a>/g;
+    $html =~ s/#([[:alnum:]]*)/<a href="\/hashtag\/$1">#$1<\/a>/g;
     $html =~ s/@([[:alnum:]]*)/<a href="\/$1">\@$1<\/a>/g;
     return $html;
   }

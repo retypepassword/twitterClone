@@ -3,10 +3,10 @@
 var MAX_TWEET_LENGTH = 150;
 
 $("#post-tweet").submit(function(e) {
-  $.post( "api/tweet", { "tweet" : $("#twt")[0].value }, function(data) {
+  $.post( "/api/tweet", { "tweet" : $("#twt")[0].value }, function(data) {
     $("#post-tweet").parent().after("<div class=\"tweet-wrapper\"><div class=\"tweet\">" +
                                     "<div class=\"text\">" + data.text + "</div>" +
-                                    "<div class=\"meta\"><span class=\"author text-muted\">by <a href=\"" + data.username + "\">@" +
+                                    "<div class=\"meta\"><span class=\"author text-muted\">by <a href=\"/" + data.username + "\">@" +
                                     data.username + "</a> (" + data.author + ")</span>" +
                                     "<span class=\"time text-muted\">" + data.date + "</span><br class=\"clear\">" +
                                     "</div></div><div class=\"options\"><a href=\"#\" class=\"remove text-danger hidden\">" +

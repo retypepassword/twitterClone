@@ -24,6 +24,10 @@
   float: none;
 }
 
+.search-results h2 {
+  margin-bottom: 1em;
+}
+
 .top {
   margin-bottom: 0.5em;
 }
@@ -36,7 +40,7 @@
   margin-top: 0;
 }
 
-.top h1, .top a, .search, .latest h2 {
+.top h1, .top a, .login-links, .search, .latest h2 {
   float: left;
 }
 
@@ -44,8 +48,21 @@
   float: right;
 }
 
-.top a {
+.top a, .login-links {
   margin: 0.5em 2em 0.5em 0;
+}
+
+.login-links a {
+  margin: 0.5em 0;
+  float: none;
+}
+
+.top h1 a {
+  margin-top: 0;
+}
+
+.top h1 a:hover {
+  text-decoration: none;
 }
 
 .latest {

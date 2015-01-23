@@ -4,7 +4,7 @@ CREATE TABLE IF NOT EXISTS user (
 	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
     user VARCHAR(30),
 	name VARCHAR(50),
-    passphrase VARCHAR(30),
+    passphrase VARCHAR(40),
     private TINYINT(1),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -60,5 +60,11 @@ CREATE TABLE IF NOT EXISTS followed (
 ALTER TABLE `followed`
 ADD CONSTRAINT `followed_user` FOREIGN KEY (`followed_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `follower` FOREIGN KEY (`follower_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+CREATE TABLE IF NOT EXISTS sessions (
+    id CHAR(72) PRIMARY KEY,
+    session_data TEXT,
+    expires INT(10)
+)
 
 INSERT INTO user VALUES (1, "user", "First User", "passw0rd", 0);

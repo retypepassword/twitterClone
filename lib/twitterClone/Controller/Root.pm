@@ -32,6 +32,8 @@ The root page (/)
 sub index :Path :Args(0) {
     my ( $self, $c ) = @_;
 
+    $c->forward('/account/authenticate');
+
     my $tweets = $c->model('DB')->resultset('Tweet')->search(
       { 'user.private' => '0' },
       { join => 'user',
@@ -44,7 +46,7 @@ sub index :Path :Args(0) {
       template => 'index.tt2');
 }
 
-sub tweet :Path('/tweet') {
+sub tweet :Path('/tweet') :Chained('/') :Args(0) {
   my ($self, $c) = @_;
 
   $c->forward('/api/tweet');
@@ -65,24 +67,29 @@ sub search :PathPart('search') :Chained('/') :Args(1) {
 
   $query = $c->stash->{query} || $c->request->params->{query} || $query;
   
-  my ($tweets, $joins, $search_col);
+  my ($tweets, $joins, $search_col, $orig_query);
+
+  $orig_query = $query;
 
   if ($query =~ /^#/) {
     $query =~ s/#//g;
     $joins = [ { 'user' => 'followed_followeds' }, { 'tweet_hashtags' => 'tag' } ];
     $search_col = 'tag.tag';
   }
+  elsif ($query =~ /^\@/) {
+    $query =~ s/\@//g;
+    $c->detach('userpages', [ $query ]);
+  }
   else {
     $joins = { 'user' => 'followed_followeds' };
     $search_col = 'me.text';
   }
 
-  # $c->session->{user_id}
   $tweets = $c->model('DB')->resultset('Tweet')->search(
     [ -and => [
         -or => [
           'user.private' => '0',
-          'followed_followeds.follower_id' => 1
+          'followed_followeds.follower_id' => $c->session->{user_id}
         ],
         $search_col => { -like => '%'.$query.'%' }
       ],
@@ -92,7 +99,7 @@ sub search :PathPart('search') :Chained('/') :Args(1) {
   );
 
   $c->stash(
-    search_results => 1,
+    search_results => $orig_query,
     tweets => $tweets,
     template => 'index.tt2');
 }
@@ -105,11 +112,11 @@ sub userpages :PathPart('') :Chained('/') Args(1) {
   if (defined $u) {
     my $uid = $u->id;
     
-    # $c->session->{user_id}
-    my $is_followed = $c->model('DB')->resultset('Followed')->find({ followed_id => $uid, follower_id => 1 });
+    my $is_followed = $c->model('DB')->resultset('Followed')->find({ followed_id => $uid,
+                                                                     follower_id => $c->session->{user_id} });
     my $constraints = [ { 'followed_followeds.follower_id' => $uid }, { 'me.user_id' => $uid }, { 'tweets_to.user_id' => $uid } ];
 
-    if ( ! defined $is_followed ) { # || $c->session->{user_id} == $uid
+    if ( ! defined $is_followed || $c->session->{user_id} == $uid ) {
       # select * from tweet me join user user on user.id = me.user_id left join followed followed on me.user_id = followed.followed_id left join tweet_to tweet_to on tweet_to.tweet_id = me.id where (followed.follower_id = 2 OR me.user_id = 2 OR tweet_to.user_id = 2) AND user.private = '0'; The 2 is the current user's id.
      $constraints = [ -and => [ $constraints, { 'user.private' => '0' } ] ];
     }
@@ -119,6 +126,8 @@ sub userpages :PathPart('') :Chained('/') Args(1) {
       { join => [ { 'user' => 'followed_followeds' }, 'tweets_to' ],
         order_by => { '-desc' => ['me.date']} },
     );
+
+    $c->session->{test} = "Test.";
 
     $c->stash(
       is_followed => $is_followed,
