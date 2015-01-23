@@ -1,10 +1,14 @@
+[% IF search_results %]
+<div class="content search-results">
+[% ELSE %]
+<div class="content">
 <div class="latest">
   <h2>Latest Tweets</h2>
-  <p class="options"><a href="#">Reload</a> | <a href="#">Auto-Refresh</a></p>
+  <!-- <p class="options"><a href="#">Reload</a> | <a href="#">Auto-Refresh</a></p> -->
 </div>
 <br class="clear">
 <div class="tweet-wrapper no-border no-options">
-  <form id="post-tweet">
+  <form id="post-tweet" action="/tweet" method="post">
     <div class="form-group">
       <label for="twt">Post a tweet</label>
       <textarea class="form-control" rows="2" id="twt" name="tweet"></textarea>
@@ -12,15 +16,16 @@
     <input class="btn btn-primary" type="submit" value="Post">     <span class="text-muted">150 characters left</span>
   </form>
 </div>
+[% END %]
 
 [% WHILE (tweet = tweets.next) %]
-<div class="tweet-wrapper" onmouseover="unhide(this)" onmouseout="hide(this)">
+<div class="tweet-wrapper">
   <div class="tweet">
     <div class="text">
-      [% tweet.text %]
+      [% tweet.html() %]
     </div>
     <div class="meta">
-      <span class="author text-muted">by <a href="[% tweet.user.username %]">@[% tweet.user.username %]</a> ([% tweet.user.name %])</span>
+      <span class="author text-muted">by <a href="[% tweet.user.user %]">@[% tweet.user.user %]</a> ([% tweet.user.name %])</span>
       <span class="time text-muted">[% tweet.getDate() %]</span>
       <br class="clear">
     </div>
@@ -41,3 +46,4 @@ function hide(self) {
   self.childNodes[3].childNodes[1].className = "text-danger hidden";
 }
 </script>
+</div>

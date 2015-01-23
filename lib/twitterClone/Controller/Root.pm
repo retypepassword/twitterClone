@@ -38,17 +38,98 @@ sub index :Path :Args(0) {
         order_by => { '-desc' => ['me.date']} },
     );
 
-    # select * from tweet me left join followed followed on me.user_id = followed.followed_id left join tweet_to tweet_to on tweet_to.tweet_id = me.id where followed.follower_id = 2 OR me.user_id = 2 OR tweet_to.user_id = 2; The 2 is the current user's id.
+    $c->stash(
+      search_results => 1,
+      tweets => $tweets,
+      template => 'index.tt2');
+}
+
+sub tweet :Path('/tweet') {
+  my ($self, $c) = @_;
+
+  $c->forward('/api/tweet');
+  $c->res->redirect($c->uri_for('/'));
+  $c->detach();
+}
+
+sub hashtag :PathPart('hashtag') :Chained('/') :Args(1) {
+  my ($self, $c, $tag) = @_;
+
+  $c->stash->{query} = '#'.$tag;
+
+  $c->detach('search');
+}
+
+sub search :PathPart('search') :Chained('/') :Args(1) {
+  my ($self, $c, $query) = @_;
+
+  $query = $c->stash->{query} || $c->request->params->{query} || $query;
+  
+  my ($tweets, $joins, $search_col);
+
+  if ($query =~ /^#/) {
+    $query =~ s/#//g;
+    $joins = [ { 'user' => 'followed_followeds' }, { 'tweet_hashtags' => 'tag' } ];
+    $search_col = 'tag.tag';
+  }
+  else {
+    $joins = { 'user' => 'followed_followeds' };
+    $search_col = 'me.text';
+  }
+
+  # $c->session->{user_id}
+  $tweets = $c->model('DB')->resultset('Tweet')->search(
+    [ -and => [
+        -or => [
+          'user.private' => '0',
+          'followed_followeds.follower_id' => 1
+        ],
+        $search_col => { -like => '%'.$query.'%' }
+      ],
+    ],
+    { join => $joins,
+      order_by => { '-desc' => ['me.date']} },
+  );
+
+  $c->stash(
+    search_results => 1,
+    tweets => $tweets,
+    template => 'index.tt2');
+}
+
+sub userpages :PathPart('') :Chained('/') Args(1) {
+  my ($self, $c, $user) = @_;
+
+  my $u = $c->model('DB')->resultset('User')->find({ 'user' => $user });
+
+  if (defined $u) {
+    my $uid = $u->id;
+    
+    # $c->session->{user_id}
+    my $is_followed = $c->model('DB')->resultset('Followed')->find({ followed_id => $uid, follower_id => 1 });
+    my $constraints = [ { 'followed_followeds.follower_id' => $uid }, { 'me.user_id' => $uid }, { 'tweets_to.user_id' => $uid } ];
+
+    if ( ! defined $is_followed ) { # || $c->session->{user_id} == $uid
+      # select * from tweet me join user user on user.id = me.user_id left join followed followed on me.user_id = followed.followed_id left join tweet_to tweet_to on tweet_to.tweet_id = me.id where (followed.follower_id = 2 OR me.user_id = 2 OR tweet_to.user_id = 2) AND user.private = '0'; The 2 is the current user's id.
+     $constraints = [ -and => [ $constraints, { 'user.private' => '0' } ] ];
+    }
+
     my $followed_tweets = $c->model('DB')->resultset('Tweet')->search(
-      [ { 'followed_followeds.follower_id' => 2 }, { 'me.user_id' => 2 }, { 'tweets_to.user_id' => 2 } ],
+      $constraints,
       { join => [ { 'user' => 'followed_followeds' }, 'tweets_to' ],
         order_by => { '-desc' => ['me.date']} },
     );
 
-    # Hello World
     $c->stash(
+      is_followed => $is_followed,
+      user => $u,
       tweets => $followed_tweets,
       template => 'index.tt2');
+  }
+  else {
+    $c->stash->{username} = $user;
+    $c->stash->{template} = 'error.tt2';
+  }
 }
 
 =head2 default

@@ -2,8 +2,9 @@
 
 CREATE TABLE IF NOT EXISTS user (
 	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
-    username VARCHAR(30),
+    user VARCHAR(30),
 	name VARCHAR(50),
+    passphrase VARCHAR(30),
     private TINYINT(1),
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -41,13 +42,13 @@ ADD CONSTRAINT `tweet_user` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON 
 -- Stores relationship between a tweet and its hashtags (for faster searching).
 CREATE TABLE IF NOT EXISTS tweet_hashtag (
 	tweet_id INT UNSIGNED NOT NULL,
-	hashtag_id INT UNSIGNED NOT NULL,
-    PRIMARY KEY (`tweet_id`, `hashtag_id`)
+	tag_id INT UNSIGNED NOT NULL,
+    PRIMARY KEY (`tweet_id`, `tag_id`)
 ) ENGINE=InnoDB;
 
 ALTER TABLE `tweet_hashtag`
 ADD CONSTRAINT `tagged_tweet` FOREIGN KEY (`tweet_id`) REFERENCES `tweet` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-ADD CONSTRAINT `tweet_tag` FOREIGN KEY (`hashtag_id`) REFERENCES `hashtag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ADD CONSTRAINT `tweet_tag` FOREIGN KEY (`tag_id`) REFERENCES `hashtag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 -- Stores relationships between followers
 CREATE TABLE IF NOT EXISTS followed (
@@ -60,4 +61,4 @@ ALTER TABLE `followed`
 ADD CONSTRAINT `followed_user` FOREIGN KEY (`followed_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
 ADD CONSTRAINT `follower` FOREIGN KEY (`follower_id`) REFERENCES `user` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
-INSERT INTO user VALUES (1, "user", "First User", 0);
+INSERT INTO user VALUES (1, "user", "First User", "passw0rd", 0);

@@ -45,7 +45,7 @@ __PACKAGE__->table("user");
   is_auto_increment: 1
   is_nullable: 0
 
-=head2 username
+=head2 user
 
   data_type: 'varchar'
   is_nullable: 1
@@ -56,6 +56,12 @@ __PACKAGE__->table("user");
   data_type: 'varchar'
   is_nullable: 1
   size: 50
+
+=head2 passphrase
+
+  data_type: 'varchar'
+  is_nullable: 1
+  size: 30
 
 =head2 private
 
@@ -72,10 +78,12 @@ __PACKAGE__->add_columns(
     is_auto_increment => 1,
     is_nullable => 0,
   },
-  "username",
+  "user",
   { data_type => "varchar", is_nullable => 1, size => 30 },
   "name",
   { data_type => "varchar", is_nullable => 1, size => 50 },
+  "passphrase",
+  { data_type => "varchar", is_nullable => 1, size => 30 },
   "private",
   { data_type => "tinyint", is_nullable => 1 },
 );
@@ -185,8 +193,8 @@ Composing rels: L</tweets_to> -> tweet
 __PACKAGE__->many_to_many("tweets", "tweets_to", "tweet");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 13:19:55
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:CFeto1BNY/EiXzOVwVIizA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 20:50:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9zZ2lFDwrdcM5n3U+FC9rg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

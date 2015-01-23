@@ -150,15 +150,15 @@ __PACKAGE__->belongs_to(
   { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
-=head2 hashtags
+=head2 tags
 
 Type: many_to_many
 
-Composing rels: L</tweet_hashtags> -> hashtag
+Composing rels: L</tweet_hashtags> -> tag
 
 =cut
 
-__PACKAGE__->many_to_many("hashtags", "tweet_hashtags", "hashtag");
+__PACKAGE__->many_to_many("tags", "tweet_hashtags", "tag");
 
 =head2 users
 
@@ -171,22 +171,50 @@ Composing rels: L</tweets_to> -> user
 __PACKAGE__->many_to_many("users", "tweets_to", "user");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 13:00:30
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:L4AeoE5fdq2euux1alF6IA
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 20:50:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HXZmd3J/xYzpPBeY2fjjiw
+
+sub updateTable {
+  my ($self, $type, $items, $table_name, $relationship) = @_;
+  my $schema = $self->result_source->schema;
+
+  for my $item (@$items) {
+    my $item_obj = $schema->resultset($table_name)->find_or_create({ $type => $item });
+    $schema->resultset($relationship)->find_or_create({ tweet_id => $self->id,
+                                                         $type.'_id' => $item_obj->id
+                                                      });
+  }
+}
 
 sub updateTagsAndPeople {
   my $self = shift;
   # Code for updating tags and people
+  my $html = $self->text;
+  my @tags = ($html =~ /#([[:alnum:]]*)/);
+  my @people = ($html =~ /@([[:alnum:]]*)/);
+
+  $self->updateTable("tag", \@tags, 'Hashtag', 'TweetHashtag');
+  $self->updateTable("user", \@people, 'User', 'TweetTo');
 }
 
+# TODO: Make another column to store results of this sub in the table
+# (perhaps do it in the subroutine updateTagsAndPeople)
 sub html {
   my $self = shift;
-  return $self->text;
+  if ( $self->text =~ /[#@]/ ) {
+    my $html = $self->text;
+    $html =~ s/#([[:alnum:]]*)/<a href="hashtag\/$1">#$1<\/a>/g;
+    $html =~ s/@([[:alnum:]]*)/<a href="\/$1">\@$1<\/a>/g;
+    return $html;
+  }
+  else {
+    return $self->text;
+  }
 }
 
 sub getDate {
   my $self = shift;
-  return $self->date->strftime("%A, %B %d, %Y");
+  return $self->date->set_time_zone('UTC')->set_time_zone('America/Los_Angeles')->strftime("%A, %B %d, %Y at %I:%M %p");
 }
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration

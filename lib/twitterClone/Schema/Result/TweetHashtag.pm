@@ -45,7 +45,7 @@ __PACKAGE__->table("tweet_hashtag");
   is_foreign_key: 1
   is_nullable: 0
 
-=head2 hashtag_id
+=head2 tag_id
 
   data_type: 'integer'
   extra: {unsigned => 1}
@@ -62,7 +62,7 @@ __PACKAGE__->add_columns(
     is_foreign_key => 1,
     is_nullable => 0,
   },
-  "hashtag_id",
+  "tag_id",
   {
     data_type => "integer",
     extra => { unsigned => 1 },
@@ -77,17 +77,17 @@ __PACKAGE__->add_columns(
 
 =item * L</tweet_id>
 
-=item * L</hashtag_id>
+=item * L</tag_id>
 
 =back
 
 =cut
 
-__PACKAGE__->set_primary_key("tweet_id", "hashtag_id");
+__PACKAGE__->set_primary_key("tweet_id", "tag_id");
 
 =head1 RELATIONS
 
-=head2 hashtag
+=head2 tag
 
 Type: belongs_to
 
@@ -96,9 +96,9 @@ Related object: L<twitterClone::Schema::Result::Hashtag>
 =cut
 
 __PACKAGE__->belongs_to(
-  "hashtag",
+  "tag",
   "twitterClone::Schema::Result::Hashtag",
-  { id => "hashtag_id" },
+  { id => "tag_id" },
   { is_deferrable => 1, on_delete => "CASCADE", on_update => "CASCADE" },
 );
 
@@ -118,8 +118,8 @@ __PACKAGE__->belongs_to(
 );
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-21 23:58:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:NOL7JAXIyHVwq/RFwwSEkg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 20:50:28
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:hBwQGikt3LlRf76p6bA0qg
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
