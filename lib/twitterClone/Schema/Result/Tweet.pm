@@ -56,7 +56,7 @@ __PACKAGE__->table("tweet");
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 141
+  size: 151
 
 =head2 date
 
@@ -82,7 +82,7 @@ __PACKAGE__->add_columns(
     is_nullable => 0,
   },
   "text",
-  { data_type => "varchar", is_nullable => 1, size => 141 },
+  { data_type => "varchar", is_nullable => 1, size => 151 },
   "date",
   {
     data_type => "datetime",
@@ -171,8 +171,8 @@ Composing rels: L</tweets_to> -> user
 __PACKAGE__->many_to_many("users", "tweets_to", "user");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 20:50:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:HXZmd3J/xYzpPBeY2fjjiw
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-23 13:24:21
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:ECZzSU31ICSEMvY8AkBZQw
 
 sub updateTable {
   my ($self, $type, $items, $table_name, $relationship) = @_;
@@ -188,7 +188,7 @@ sub updateTable {
 
 sub updateTagsAndPeople {
   my $self = shift;
-  # Code for updating tags and people
+  # Code for updating tags and people (adds relationships from tweet to relevant hashtags and people)
   my $html = $self->text;
   my @tags = ($html =~ /#([[:alnum:]]*)/);
   my @people = ($html =~ /@([[:alnum:]]*)/);

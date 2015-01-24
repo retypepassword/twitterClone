@@ -1,0 +1,47 @@
+[% IF search_results %]
+<div class="content search-results">
+[% IF search_results != 1 %]
+<h2>Search Results for: [% search_results %]</h2>
+[% ELSE %]
+<h2>Public Tweets</h2>
+[% END %]
+[% ELSE %]
+<div class="content">
+<div class="latest">
+  <h2>Latest Tweets</h2>
+  <!-- <p class="options"><a href="#">Reload</a> | <a href="#">Auto-Refresh</a></p> -->
+</div>
+<br class="clear">
+[% IF c.session.user_id && c.session.uname == user.user %]
+<div class="tweet-wrapper no-border no-options">
+  <form id="post-tweet" action="/tweet" method="post">
+    <div class="form-group">
+      <label for="twt">Post a tweet</label>
+      <textarea class="form-control" rows="2" id="twt" name="tweet"></textarea>
+    </div>
+    <input class="btn btn-primary" type="submit" value="Post">     <span class="text-muted">150 characters left</span>
+  </form>
+</div>
+[% END %]
+[% END %]
+[% WHILE (tweet = tweets.next) %]
+<div class="tweet-wrapper">
+  <div class="tweet">
+    <div class="text">
+      [% tweet.html() %]
+    </div>
+    <div class="meta">
+      <span class="author text-muted">by <a href="[% c.uri_for('/', tweet.user.user) %]">@[% tweet.user.user %]</a> ([% tweet.user.name %])</span>
+      <span class="time text-muted">[% tweet.getDate() %]</span>
+      <br class="clear">
+    </div>
+  </div>
+  <div class="options">
+[% IF tweet.user_id == c.session.user_id %]
+    <a href="#" class="text-danger hidden" data-id="[% tweet.id %]"><i class="glyphicon glyphicon-remove"></i></a>
+[% END %]
+  </div>
+  <br class="clear">
+</div>
+[% END %]
+</div>

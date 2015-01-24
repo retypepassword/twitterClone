@@ -26,7 +26,7 @@
 #     VERSION_FROM => q[lib/twitterClone.pm]
 #     dist => { PREOP=>q[$(PERL) -I. "-MModule::Install::Admin" -e "dist_preop(q($(DISTVNAME)))"] }
 #     realclean => { FILES=>q[MYMETA.yml] }
-#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t] }
+#     test => { TESTS=>q[t/01app.t t/02pod.t t/03podcoverage.t t/controller_Account.t t/controller_API.t t/model_DB.t t/view_HTML.t] }
 
 # --- MakeMaker post_initialize section:
 
@@ -174,7 +174,18 @@ MAN1PODS = script/twitterclone_cgi.pl \
 	script/twitterclone_server.pl \
 	script/twitterclone_test.pl
 MAN3PODS = lib/twitterClone.pm \
-	lib/twitterClone/Controller/Root.pm
+	lib/twitterClone/Controller/API.pm \
+	lib/twitterClone/Controller/Account.pm \
+	lib/twitterClone/Controller/Root.pm \
+	lib/twitterClone/Model/DB.pm \
+	lib/twitterClone/Schema/Result/Followed.pm \
+	lib/twitterClone/Schema/Result/Hashtag.pm \
+	lib/twitterClone/Schema/Result/Session.pm \
+	lib/twitterClone/Schema/Result/Tweet.pm \
+	lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	lib/twitterClone/Schema/Result/TweetTo.pm \
+	lib/twitterClone/Schema/Result/User.pm \
+	lib/twitterClone/View/HTML.pm
 
 # Where is the Config information that we are using/depend on
 CONFIGDEP = $(PERL_ARCHLIB)$(DFSEP)Config.pm $(PERL_INC)$(DFSEP)config.h
@@ -197,12 +208,51 @@ PERL_ARCHIVE_AFTER =
 
 
 TO_INST_PM = lib/twitterClone.pm \
-	lib/twitterClone/Controller/Root.pm
+	lib/twitterClone/Controller/API.pm \
+	lib/twitterClone/Controller/Account.pm \
+	lib/twitterClone/Controller/Root.pm \
+	lib/twitterClone/Model/DB.pm \
+	lib/twitterClone/Schema.pm \
+	lib/twitterClone/Schema/Result/Followed.pm \
+	lib/twitterClone/Schema/Result/Hashtag.pm \
+	lib/twitterClone/Schema/Result/Session.pm \
+	lib/twitterClone/Schema/Result/Tweet.pm \
+	lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	lib/twitterClone/Schema/Result/TweetTo.pm \
+	lib/twitterClone/Schema/Result/User.pm \
+	lib/twitterClone/Schema/ResultSet/Tweet.pm \
+	lib/twitterClone/View/HTML.pm
 
 PM_TO_BLIB = lib/twitterClone.pm \
 	blib/lib/twitterClone.pm \
+	lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	blib/lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	lib/twitterClone/Schema/Result/Hashtag.pm \
+	blib/lib/twitterClone/Schema/Result/Hashtag.pm \
 	lib/twitterClone/Controller/Root.pm \
-	blib/lib/twitterClone/Controller/Root.pm
+	blib/lib/twitterClone/Controller/Root.pm \
+	lib/twitterClone/Controller/API.pm \
+	blib/lib/twitterClone/Controller/API.pm \
+	lib/twitterClone/Schema.pm \
+	blib/lib/twitterClone/Schema.pm \
+	lib/twitterClone/Model/DB.pm \
+	blib/lib/twitterClone/Model/DB.pm \
+	lib/twitterClone/Schema/Result/TweetTo.pm \
+	blib/lib/twitterClone/Schema/Result/TweetTo.pm \
+	lib/twitterClone/View/HTML.pm \
+	blib/lib/twitterClone/View/HTML.pm \
+	lib/twitterClone/Schema/Result/Session.pm \
+	blib/lib/twitterClone/Schema/Result/Session.pm \
+	lib/twitterClone/Schema/Result/User.pm \
+	blib/lib/twitterClone/Schema/Result/User.pm \
+	lib/twitterClone/Schema/Result/Followed.pm \
+	blib/lib/twitterClone/Schema/Result/Followed.pm \
+	lib/twitterClone/Controller/Account.pm \
+	blib/lib/twitterClone/Controller/Account.pm \
+	lib/twitterClone/Schema/ResultSet/Tweet.pm \
+	blib/lib/twitterClone/Schema/ResultSet/Tweet.pm \
+	lib/twitterClone/Schema/Result/Tweet.pm \
+	blib/lib/twitterClone/Schema/Result/Tweet.pm
 
 
 # --- MakeMaker platform_constants section:
@@ -430,7 +480,18 @@ manifypods : pure_all  \
 	script/twitterclone_cgi.pl \
 	script/twitterclone_create.pl \
 	lib/twitterClone.pm \
-	lib/twitterClone/Controller/Root.pm
+	lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	lib/twitterClone/Schema/Result/Hashtag.pm \
+	lib/twitterClone/Controller/Root.pm \
+	lib/twitterClone/Controller/API.pm \
+	lib/twitterClone/Model/DB.pm \
+	lib/twitterClone/Schema/Result/TweetTo.pm \
+	lib/twitterClone/View/HTML.pm \
+	lib/twitterClone/Schema/Result/Session.pm \
+	lib/twitterClone/Schema/Result/User.pm \
+	lib/twitterClone/Schema/Result/Followed.pm \
+	lib/twitterClone/Controller/Account.pm \
+	lib/twitterClone/Schema/Result/Tweet.pm
 	$(NOECHO) $(POD2MAN) --section=1 --perm_rw=$(PERM_RW) \
 	  script/twitterclone_server.pl $(INST_MAN1DIR)/twitterclone_server.pl.$(MAN1EXT) \
 	  script/twitterclone_fastcgi.pl $(INST_MAN1DIR)/twitterclone_fastcgi.pl.$(MAN1EXT) \
@@ -439,7 +500,18 @@ manifypods : pure_all  \
 	  script/twitterclone_create.pl $(INST_MAN1DIR)/twitterclone_create.pl.$(MAN1EXT) 
 	$(NOECHO) $(POD2MAN) --section=3 --perm_rw=$(PERM_RW) \
 	  lib/twitterClone.pm $(INST_MAN3DIR)/twitterClone.$(MAN3EXT) \
-	  lib/twitterClone/Controller/Root.pm $(INST_MAN3DIR)/twitterClone::Controller::Root.$(MAN3EXT) 
+	  lib/twitterClone/Schema/Result/TweetHashtag.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::TweetHashtag.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/Hashtag.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::Hashtag.$(MAN3EXT) \
+	  lib/twitterClone/Controller/Root.pm $(INST_MAN3DIR)/twitterClone::Controller::Root.$(MAN3EXT) \
+	  lib/twitterClone/Controller/API.pm $(INST_MAN3DIR)/twitterClone::Controller::API.$(MAN3EXT) \
+	  lib/twitterClone/Model/DB.pm $(INST_MAN3DIR)/twitterClone::Model::DB.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/TweetTo.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::TweetTo.$(MAN3EXT) \
+	  lib/twitterClone/View/HTML.pm $(INST_MAN3DIR)/twitterClone::View::HTML.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/Session.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::Session.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/User.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::User.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/Followed.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::Followed.$(MAN3EXT) \
+	  lib/twitterClone/Controller/Account.pm $(INST_MAN3DIR)/twitterClone::Controller::Account.$(MAN3EXT) \
+	  lib/twitterClone/Schema/Result/Tweet.pm $(INST_MAN3DIR)/twitterClone::Schema::Result::Tweet.$(MAN3EXT) 
 
 
 
@@ -813,7 +885,7 @@ $(MAKE_APERL_FILE) : $(FIRST_MAKEFILE) pm_to_blib
 TEST_VERBOSE=0
 TEST_TYPE=test_$(LINKTYPE)
 TEST_FILE = test.pl
-TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t
+TEST_FILES = t/01app.t t/02pod.t t/03podcoverage.t t/controller_Account.t t/controller_API.t t/model_DB.t t/view_HTML.t
 TESTDB_SW = -d
 
 testdb :: testdb_$(LINKTYPE)
@@ -861,7 +933,20 @@ ppd :
 pm_to_blib : $(FIRST_MAKEFILE) $(TO_INST_PM)
 	$(NOECHO) $(ABSPERLRUN) -MExtUtils::Install -e 'pm_to_blib({@ARGV}, '\''$(INST_LIB)/auto'\'', q[$(PM_FILTER)], '\''$(PERM_DIR)'\'')' -- \
 	  lib/twitterClone.pm blib/lib/twitterClone.pm \
-	  lib/twitterClone/Controller/Root.pm blib/lib/twitterClone/Controller/Root.pm 
+	  lib/twitterClone/Schema/Result/TweetHashtag.pm blib/lib/twitterClone/Schema/Result/TweetHashtag.pm \
+	  lib/twitterClone/Schema/Result/Hashtag.pm blib/lib/twitterClone/Schema/Result/Hashtag.pm \
+	  lib/twitterClone/Controller/Root.pm blib/lib/twitterClone/Controller/Root.pm \
+	  lib/twitterClone/Controller/API.pm blib/lib/twitterClone/Controller/API.pm \
+	  lib/twitterClone/Schema.pm blib/lib/twitterClone/Schema.pm \
+	  lib/twitterClone/Model/DB.pm blib/lib/twitterClone/Model/DB.pm \
+	  lib/twitterClone/Schema/Result/TweetTo.pm blib/lib/twitterClone/Schema/Result/TweetTo.pm \
+	  lib/twitterClone/View/HTML.pm blib/lib/twitterClone/View/HTML.pm \
+	  lib/twitterClone/Schema/Result/Session.pm blib/lib/twitterClone/Schema/Result/Session.pm \
+	  lib/twitterClone/Schema/Result/User.pm blib/lib/twitterClone/Schema/Result/User.pm \
+	  lib/twitterClone/Schema/Result/Followed.pm blib/lib/twitterClone/Schema/Result/Followed.pm \
+	  lib/twitterClone/Controller/Account.pm blib/lib/twitterClone/Controller/Account.pm \
+	  lib/twitterClone/Schema/ResultSet/Tweet.pm blib/lib/twitterClone/Schema/ResultSet/Tweet.pm \
+	  lib/twitterClone/Schema/Result/Tweet.pm blib/lib/twitterClone/Schema/Result/Tweet.pm 
 	$(NOECHO) $(TOUCH) pm_to_blib
 
 

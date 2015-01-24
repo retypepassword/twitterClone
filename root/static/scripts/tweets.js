@@ -2,6 +2,7 @@
 
 var MAX_TWEET_LENGTH = 150;
 
+/* posts a tweet and adds it beneath the tweeting box */
 $("#post-tweet").submit(function(e) {
   $.post( "/api/tweet", { "tweet" : $("#twt")[0].value }, function(data) {
     $("#post-tweet").parent().after("<div class=\"tweet-wrapper\"><div class=\"tweet\">" +
@@ -13,11 +14,14 @@ $("#post-tweet").submit(function(e) {
                                     "<i class=\"glyphicon glyphicon-remove\"></i></a></div><br class=\"clear\"></div>");
     $("#twt")[0].value = "";
     $("#twt").keyup();
+    
+    /* Activates the x buttons so the user can delete the tweet that was just posted if they want */
     activate_delete_buttons();
   }, "json");
   e.preventDefault();
 });
 
+/* Prevents tweets from being more than MAX_TWEET_LENGTH characters */
 $("#twt").keyup(function(e) {
   var len = MAX_TWEET_LENGTH - parseInt(this.value.length);
   
@@ -30,6 +34,8 @@ $("#twt").keyup(function(e) {
   $("#post-tweet .text-muted").html(len + " characters left");
 });
 
+/* Shows and hides the elements with the delete buttons if the user hovers
+ * over the tweet. Adds click handler for deleting via XHR */
 function activate_delete_buttons() {
   $(".tweet-wrapper").mouseover(function(e) {
     if ($(this).find('.options a')[0]) {

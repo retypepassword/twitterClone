@@ -34,6 +34,7 @@ sub index :Path :Args(0) {
 
     $c->forward('/account/authenticate');
 
+    # Select all tweets but the private ones. This is displayed on the main page under "public tweets"
     my $tweets = $c->model('DB')->resultset('Tweet')->search(
       { 'user.private' => '0' },
       { join => 'user',
@@ -46,6 +47,7 @@ sub index :Path :Args(0) {
       template => 'index.tt2');
 }
 
+# Tweet and redirect back to /. Mainly for javascript-less users.
 sub tweet :Path('/tweet') :Chained('/') :Args(0) {
   my ($self, $c) = @_;
 
@@ -54,6 +56,8 @@ sub tweet :Path('/tweet') :Chained('/') :Args(0) {
   $c->detach();
 }
 
+# Forwards to search. Returns results to hashtags (e.g., /hashtag/hi
+# gives tweets with the hashtag #hi)
 sub hashtag :PathPart('hashtag') :Chained('/') :Args(1) {
   my ($self, $c, $tag) = @_;
 
@@ -62,6 +66,7 @@ sub hashtag :PathPart('hashtag') :Chained('/') :Args(1) {
   $c->detach('search');
 }
 
+# Searches hashtags, words or phrases.
 sub search :PathPart('search') :Chained('/') :Args(1) {
   my ($self, $c, $query) = @_;
 
@@ -71,11 +76,14 @@ sub search :PathPart('search') :Chained('/') :Args(1) {
 
   $orig_query = $query;
 
+  # Look up the tweet-hashtag relationship if the user is searching for a hashtag
   if ($query =~ /^#/) {
     $query =~ s/#//g;
     $joins = [ { 'user' => 'followed_followeds' }, { 'tweet_hashtags' => 'tag' } ];
     $search_col = 'tag.tag';
   }
+
+  # If the user is searching for a user, display the relevant profile.
   elsif ($query =~ /^\@/) {
     $query =~ s/\@//g;
     $c->detach('userpages', [ $query ]);
@@ -85,6 +93,8 @@ sub search :PathPart('search') :Chained('/') :Args(1) {
     $search_col = 'me.text';
   }
 
+  # Show relevant results, but hide private ones except if you're following the user
+  # who is marked private. Order by date, descending (so newest on top)
   $tweets = $c->model('DB')->resultset('Tweet')->search(
     [ -and => [
         -or => [
@@ -104,6 +114,9 @@ sub search :PathPart('search') :Chained('/') :Args(1) {
     template => 'index.tt2');
 }
 
+# Shows tweets for a user (incl. all the tweets from people they're following and
+# tweets from other people at them (e.g., tweet @user1 would show on user1's page, even
+# if user1 isn't following the person who tweeted).
 sub userpages :PathPart('') :Chained('/') Args(1) {
   my ($self, $c, $user) = @_;
 

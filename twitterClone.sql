@@ -12,7 +12,7 @@ CREATE TABLE IF NOT EXISTS user (
 CREATE TABLE IF NOT EXISTS tweet (
 	id INT(10) UNSIGNED NOT NULL AUTO_INCREMENT,
 	user_id INT(10) UNSIGNED NOT NULL,
-	text VARCHAR(141),
+	text VARCHAR(151),
     date DATETIME,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
@@ -65,6 +65,6 @@ CREATE TABLE IF NOT EXISTS sessions (
     id CHAR(72) PRIMARY KEY,
     session_data TEXT,
     expires INT(10)
-)
+) ENGINE=InnoDB;
 
-INSERT INTO user VALUES (1, "user", "First User", "passw0rd", 0);
+INSERT INTO user VALUES (1, 'user', 'First User', 'passw0rd', 0);

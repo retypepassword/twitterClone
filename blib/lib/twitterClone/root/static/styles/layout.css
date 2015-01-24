@@ -1,0 +1,136 @@
+/* Purposely not using Bootstrap's scaffolding for demo purposes */
+.page-wrapper {
+  padding: 0.5em;
+  /*max-*/width: 67em;
+  margin: 0 auto;
+}
+
+.content {
+  /*max-*/width: 50em;
+  margin: 0 auto;
+}
+
+.page-wrapper .person {
+  width: 15em;
+  float: left;
+}
+
+.page-wrapper .content {
+  float: left;
+}
+
+.content.search-results {
+  margin-top: 2em;
+  float: none;
+}
+
+.search-results h2 {
+  margin-bottom: 1em;
+}
+
+.top {
+  margin-bottom: 0.5em;
+}
+
+.top, .latest, .person {
+  padding: 0.5em 0 0 0;
+}
+
+.top h1, .latest h2, .person h2 {
+  margin-top: 0;
+}
+
+.top h1, .top a, .login-links, .search, .latest h2 {
+  float: left;
+}
+
+.options {
+  float: right;
+}
+
+.top a, .login-links {
+  margin: 0.5em 2em 0.5em 0;
+}
+
+.login-links a {
+  margin: 0.5em 0;
+  float: none;
+}
+
+.top h1 a {
+  margin-top: 0;
+}
+
+.top h1 a:hover {
+  text-decoration: none;
+}
+
+.latest {
+  width: 40em;
+  margin: 0 auto;
+}
+
+.latest .options {
+  margin: 0.5em 2em;
+}
+
+.person #fake_picture {
+  width: 200px;
+  height: 200px;
+  background-color: #eee;
+  margin-bottom: 1em;
+}
+
+.tweet-wrapper {
+  /*max-*/width: 44em;
+  margin: 0 auto 1em auto;
+}
+
+.tweet {
+  float: left;
+  /*max-*/width: 40em;
+  border: 1px #aaa solid;
+  margin-left: 2em;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+
+.tweet-wrapper .options {
+  float: left;
+  margin-left: 5px;
+  max-width: 0.9em;
+}
+
+.tweet .text {
+  padding: 1em;
+}
+
+.tweet .meta {
+  padding: 0.5em 1em;
+  background-color: #eee;
+}
+
+.tweet .meta .time {
+  float: right;
+}
+
+.tweet form {
+  margin: 0.5em 0.5em;
+}
+
+.clear {
+  clear: both;
+}
+
+.no-border {
+  border: none;
+}
+
+.tweet-wrapper.no-options {
+  /*max-*/width: 40em;
+}
+
+.hidden {
+  visibility: none;
+}

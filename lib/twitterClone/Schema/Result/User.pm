@@ -61,7 +61,7 @@ __PACKAGE__->table("user");
 
   data_type: 'varchar'
   is_nullable: 1
-  size: 30
+  size: 40
 
 =head2 private
 
@@ -83,7 +83,7 @@ __PACKAGE__->add_columns(
   "name",
   { data_type => "varchar", is_nullable => 1, size => 50 },
   "passphrase",
-  { data_type => "varchar", is_nullable => 1, size => 30 },
+  { data_type => "varchar", is_nullable => 1, size => 40 },
   "private",
   { data_type => "tinyint", is_nullable => 1 },
 );
@@ -193,8 +193,8 @@ Composing rels: L</tweets_to> -> tweet
 __PACKAGE__->many_to_many("tweets", "tweets_to", "tweet");
 
 
-# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-22 20:50:28
-# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:9zZ2lFDwrdcM5n3U+FC9rg
+# Created by DBIx::Class::Schema::Loader v0.07035 @ 2015-01-23 13:24:21
+# DO NOT MODIFY THIS OR ANYTHING ABOVE! md5sum:l0/aPNRvK/NFuPCUNLpS2A
 
 
 # You can replace this text with custom code or comments, and it will be preserved on regeneration
